@@ -9,7 +9,7 @@ USE company_db;
 -- Created tables within company_db --
 CREATE TABLE department (
     id int NOT NULL PRIMARY KEY auto_increment,
-    employee_name VARCHAR(30)
+    dept_name VARCHAR(30)
 );
 
 CREATE TABLE employee_role (
