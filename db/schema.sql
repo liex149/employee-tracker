@@ -1,3 +1,5 @@
+DROP DATABASE IF EXISTS company_db;
+
 -- Create new databases --
 CREATE DATABASE company_db;
 
@@ -6,21 +8,22 @@ USE company_db;
 
 -- Created tables within company_db --
 CREATE TABLE department (
-    id INIT PRIMARY KEY,
-    name VARCHAR(30)
+    id int NOT NULL PRIMARY KEY auto_increment,
+    employee_name VARCHAR(30)
 );
 
-CREATE TABLE role (
-     id INIT PRIMARY KEY,
-    title VARCHAR(30),
-    salary DECIMAL, 
+CREATE TABLE employee_role (
+    id INT NOT NULL PRIMARY KEY auto_increment,
+    employee_title VARCHAR(30),
+    employee_salary DECIMAL, 
     department_id INT
 );
 
-CREATE TABLE employee(
-    id INIT PRIMARY KEY,
+CREATE TABLE employee (
+    id INT NOT NULL PRIMARY KEY auto_increment,
     first_name VARCHAR(30),
-    lasr_name VARCHAR(30),
+    last_name VARCHAR(30),
     role_id INT,
     manager_id INT NOT NULL
 );
+
