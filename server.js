@@ -11,7 +11,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 const fs = require('fs');
-
+const { listenerCount } = require('process');
+//this is choices for department, roles, managers
 const database = mysql
   .createConnection({
     host: "localhost",
@@ -20,8 +21,6 @@ const database = mysql
     database: "company_db",
   })
   .promise();
-
-//this is where you write your query
 const choicesRole = async () => {
   const roleQuery = `SELECT id AS value, employee_title AS name FROM employee_role`;
   const roles = await database.query(roleQuery);
@@ -35,14 +34,13 @@ const choicesDPT = async () => {
   return departments[0];
 };
 const choicesManager = async () => {
-  const ManagerQuery = `SELECT id AS value, first_name, last_name AS name FROM employee`;
+  const ManagerQuery = `SELECT id AS value, first_name AS name FROM employee`;
   const Managers = await database.query(ManagerQuery);
   console.log(Managers[0])
   return Managers[0];
 };
 
-
-// Connect to database
+// Connect to db
 const db = mysql.createConnection(
   {
     host: 'localhost',
@@ -80,21 +78,27 @@ const emTracker = function () {
             console.table(result);
             emTracker();
           });
-          // formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to
-        } else if (response.Option === 'View All Roles') {
-          db.query(`SELECT * FROM employee_role`, (err, result) => {
-            if (err) throw err;
-            console.table(result);
-            emTracker();
-          });
           // present with the job title, role id, the department that role belongs to, and the salary for that role
-        } else if (response.Option === 'View All Employees') {
-          db.query(`SELECT * FROM employee`, (err, result) => {
+        } else if (response.Option === 'View All Roles') {
+          db.query(`SELECT A.id, A.employee_title, A.employee_salary, B.dept_name
+          FROM employee_role A
+          JOIN department B on A.department_id = B.id;`, (err, result) => {
             if (err) throw err;
             console.table(result);
             emTracker();
           });
-          // this adds a department
+          // formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to
+        } else if (response.Option === 'View All Employees') {
+          db.query(`SELECT A.id, A.first_name, A.last_name, employee_role.employee_title, B.first_name as manager, employee_role.employee_salary, department.dept_name
+          FROM employee A
+          JOIN employee_role on A.role_id = employee_role.id
+          LEFT JOIN employee B on A.manager_id = B.id
+          JOIN department on employee_role.department_id = department.id;`, (err, result) => {
+            if (err) throw err;
+            console.table(result);
+            emTracker();
+          });
+          // prompted to enter the name of the department and that department is added to the database
         } else if (response.Option === 'Add A Department') {
           inquirer.prompt([{
             type: 'input',
@@ -107,7 +111,7 @@ const emTracker = function () {
               emTracker();
             })
           })
-          // this adds the name, salary, and department for the role
+          // prompted to enter the name, salary, and department for the role and that role is added to the database
         } else if (response.Option === 'Add A Role') {
           inquirer.prompt([{
             type: 'input',
@@ -128,14 +132,14 @@ const emTracker = function () {
           ]).then((response) => {
             db.query(`INSERT INTO employee_role (employee_title, employee_salary, department_id) VALUES (?, ?, ?)`, [response.role, response.salary, response.department_belong], (err, result) => {
               if (err) throw err;
-          console.log('role added');
+              console.log('role added');
               emTracker();
 
             })
           })
 
 
-          // this adds the employee’s first name, last name, role, and manager
+          // prompted to enter the employee’s first name, last name, role, and manager, and that employee is added to the database
         } else if (response.Option === 'Add An Employee') {
           inquirer.prompt([
             {
@@ -155,21 +159,44 @@ const emTracker = function () {
               choices: async () => await choicesRole(),
             },
             {
-              type: 'input',
+              type: 'list',
               name: 'manager',
               message: 'Who is the manager?',
               choices: async () => await choicesManager(),
             },
           ])
             .then((response) => {
-              db.query(`INSERT INTO employee (first_name, last_name, role, manager_id) VALUES (?, ?, ?, ?)`, [response.first_name, response.last_name, response.role, response.manager], (err, result) => {
+              db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`, [response.first_name, response.last_name, response.role, response.manager], (err, result) => {
                 if (err) throw err;
-                HTMLFormControlsCollection.log('added');
+                console.log('added');
                 emTracker();
 
-              }
-              )
+              })
+
             })
+        } else if (response.Option === 'Update An Employee Role') {
+          inquirer.prompt([
+            {
+              type: 'list',
+              name: 'employee',
+              message: 'Which employee do you want to update?',
+              choices: async () => await choicesManager(),
+            },
+            {
+              type: 'list',
+              name: 'role',
+              message: 'Which employee role do you want to update?',
+              choices: async () => await choicesRole(),
+            },
+          ])
+            .then((response) => {
+              db.query(`UPDATE employee SET role_id = ? WHERE id = ?`, [response.role, response.employee], (err, result) => {
+                if (err) throw err;
+                console.log('updated');
+                emTracker();
+              })
+            })
+
         }
       })
 }
