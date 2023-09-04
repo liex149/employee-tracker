@@ -79,3 +79,36 @@
 
 // //create server listener
 // app.listen(PORT, () => console.log(`Example app listening at http://localhost:${PORT}`));
+
+// const inquirer = require("inquirer");
+// // Import and require mysql2
+// const mysql = require("mysql2");
+
+// // Connect to database
+// //TODO - hide credentials
+// const database = mysql
+//   .createConnection({
+//     host: "localhost",
+//     user: 'root',
+//     password: '',
+//     database: "company_db",
+//   })
+//   .promise();
+
+//   //this is where you write your query
+//   const choicesRole = async () => {
+//     const RoleQuery = `SELECT id AS value, role_id AS name FROM employee`;
+//     const Roles = await database.query(RoleQuery);
+//     console.log(Roles[0])
+//     return Roles[0];
+//   };
+
+
+// inquirer.prompt([
+//   {
+//     type: "list",
+//     message: "Choose your dept",
+//     name: "id",
+//     choices: async () => await choicesRole(),
+//   }
+// ]);
