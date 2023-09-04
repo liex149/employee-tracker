@@ -1,2 +1,5 @@
 node_modules
 package-logck.json
+.env
+index.js
+query.sql
