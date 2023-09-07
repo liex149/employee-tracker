@@ -1,6 +1,6 @@
 [<img src="https://img.shields.io/badge/License-MIT-yellow.svg">](https://opensource.org/licenses/MIT)
   # Employee Tracker
-
+[Untitled_ Sep 7, 2023 4_51 PM.webm](https://github.com/liex149/employee-tracker/assets/132797792/545c20ea-b507-4756-8e20-ed8ac2db2b98)
 ## Table of Content 
 
 - [Description](#description)
