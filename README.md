@@ -1,6 +1,6 @@
 [<img src="https://img.shields.io/badge/License-MIT-yellow.svg">](https://opensource.org/licenses/MIT)
   # Employee Tracker
-![Example pic of terminal](images/Capture.PNG)
+
 ## Table of Content 
 
 - [Description](#description)

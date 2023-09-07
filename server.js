@@ -66,7 +66,8 @@ const emTracker = function () {
           'Add A Department',
           'Add A Role',
           'Add An Employee',
-          'Update An Employee Role']
+          'Update An Employee Role',
+          'Quit'],
 
         // view in table and add to the department
       }]).then((response) => {
@@ -106,7 +107,7 @@ const emTracker = function () {
           }]).then((response) => {
             db.query(`INSERT INTO department (dept_name) VALUES (?)`, [response.department], (err, result) => {
               if (err) throw err;
-              console.log('role added');
+              console.log('department added successfully');
               emTracker();
             })
           })
@@ -131,7 +132,7 @@ const emTracker = function () {
           ]).then((response) => {
             db.query(`INSERT INTO employee_role (employee_title, employee_salary, department_id) VALUES (?, ?, ?)`, [response.role, response.salary, response.department_belong], (err, result) => {
               if (err) throw err;
-              console.log('role added');
+              console.log('role added successfully');
               emTracker();
 
             })
@@ -167,7 +168,7 @@ const emTracker = function () {
             .then((response) => {
               db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`, [response.first_name, response.last_name, response.role, response.manager], (err, result) => {
                 if (err) throw err;
-                console.log('added');
+                console.log('employee added successfully');
                 emTracker();
 
               })
@@ -196,8 +197,22 @@ const emTracker = function () {
               })
             })
 
+
+        } else if (response.Option === 'Quit') {
+          inquirer.prompt({
+            type: "list",
+            name: "exit",
+            message: "What would you like to do?",
+            choices: ['Exit']
+
+          })
+            .then((response) => {
+              if (response.exit === 'Exit') {
+                process.exit();
+              }
+
+            })
         }
-      })
-}
+      })}
 
 emTracker();
