@@ -34,7 +34,7 @@ const choicesDPT = async () => {
   return departments[0];
 };
 const choicesManager = async () => {
-  const ManagerQuery = `SELECT id AS value, first_name AS name FROM employee`;
+  const ManagerQuery = `SELECT id AS value, CONCAT(first_name,' ',last_name) AS name FROM employee`;
   const Managers = await database.query(ManagerQuery);
   console.log(Managers[0])
   return Managers[0];
@@ -88,7 +88,7 @@ const emTracker = function () {
           });
           // formatted table showing employee data, including employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to
         } else if (response.Option === 'View All Employees') {
-          db.query(`SELECT A.id, A.first_name, A.last_name, employee_role.employee_title, B.first_name as manager, employee_role.employee_salary, department.dept_name
+          db.query(`SELECT A.id, A.first_name, A.last_name, employee_role.employee_title, CONCAT(B.first_name, ' ', B.last_name) as manager, employee_role.employee_salary, department.dept_name
           FROM employee A
           JOIN employee_role on A.role_id = employee_role.id
           LEFT JOIN employee B on A.manager_id = B.id
